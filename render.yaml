@@ -17,3 +17,8 @@ services:
     name: postgres
     plan: free
     ipAllowList: []
+
+  - type: job
+    name: migrate
+    command: python manage.py migrate
+    plan: free
