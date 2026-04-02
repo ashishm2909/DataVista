@@ -10,7 +10,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_HOSTS
-        value: "*.onrender.com,your-domain.com"
+        value: "*.onrender.com,your-domain.com,datavista-dashboard.onrender.com"
     autoDeploy: true
 
   - type: pserv
