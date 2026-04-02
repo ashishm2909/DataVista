@@ -2,6 +2,15 @@
 
 Data Dashboard Platform - A powerful web-based platform for uploading data files (Excel, CSV, SQL) and creating interactive dashboards with visualizations.
 
+Live - 
+Repo - https://github.com/ashishm2909/DataVista/ 
+
+<img width="1470" height="728" alt="Screenshot 2026-04-02 at 5 29 52 PM" src="https://github.com/user-attachments/assets/ca7a8227-36f9-46b9-bd1b-a6bd1ceefbe1" />
+
+<img width="1470" height="728" alt="Screenshot 2026-04-02 at 5 29 45 PM" src="https://github.com/user-attachments/assets/a43f7bac-c4e5-498b-a164-dcfba4e0d150" />
+
+
+
 ## Features
 
 - **Multiple File Format Support**: Upload Excel (.xlsx, .xls), CSV, and SQL files
