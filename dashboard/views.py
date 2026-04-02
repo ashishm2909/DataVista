@@ -369,7 +369,7 @@ def delete_file(request, file_id):
                 os.remove(file_obj.file.path)
             
             # Delete cached CSV if exists
-            cache_path = f"media/cache/{file_obj.id}_processed.csv"
+            cache_path = os.path.join(settings.MEDIA_ROOT, 'cache', f'{file_obj.id}_processed.csv')
             if os.path.exists(cache_path):
                 os.remove(cache_path)
             

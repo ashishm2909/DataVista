@@ -3,6 +3,7 @@ import numpy as np
 import json
 import os
 from typing import Dict, List, Any, Tuple
+from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
 from dashboard.models import DatasetInfo, UploadedFile as FileModel
 import sqlparse
@@ -279,8 +280,9 @@ class DataProcessorService:
         )
         
         # Cache the dataframe as a CSV for later use
-        cache_path = f"media/cache/{file_obj.id}_processed.csv"
-        os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+        cache_dir = os.path.join(settings.MEDIA_ROOT, 'cache')
+        cache_path = os.path.join(cache_dir, f'{file_obj.id}_processed.csv')
+        os.makedirs(cache_dir, exist_ok=True)
         df.to_csv(cache_path, index=False)
         
         return dataset_info
@@ -308,7 +310,7 @@ class DataProcessorService:
     
     def get_cached_dataframe(self, dataset_info: DatasetInfo) -> pd.DataFrame:
         """Get cached processed dataframe"""
-        cache_path = f"media/cache/{dataset_info.uploaded_file.id}_processed.csv"
+        cache_path = os.path.join(settings.MEDIA_ROOT, 'cache', f'{dataset_info.uploaded_file.id}_processed.csv')
         if os.path.exists(cache_path):
             return pd.read_csv(cache_path)
         else:

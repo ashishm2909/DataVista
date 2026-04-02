@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: dashboard
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn dashboard_platform.wsgi --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: "*.onrender.com,your-domain.com"
+    autoDeploy: true
+
+  - type: pserv
+    name: postgres
+    plan: free
+    ipAllowList: []
