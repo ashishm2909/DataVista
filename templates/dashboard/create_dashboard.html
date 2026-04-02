@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Create Dashboard — DataVista{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="rv mb-4">
+        <a href="{% url 'dataset_detail' file_obj.id %}" style="color:var(--gray);font-size:0.82rem"><i class="fas fa-arrow-left me-1"></i>Back to Dataset</a>
+        <h2 class="fw-bold mb-1 mt-2"><i class="fas fa-chart-bar me-2 neon"></i>Create Dashboard</h2>
+        <p style="color:var(--gray);margin:0">From: {{ file_obj.file_name }}</p>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-7 rv rv-d1">
+            <div class="card">
+                <div class="card-head"><i class="fas fa-gear" style="color:var(--cyan)"></i> Configuration</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Dashboard Name</label>
+                            <input type="text" class="form-control" name="dashboard_name" value="Dashboard for {{ file_obj.file_name }}" required>
+                            <div class="form-hint">Give your dashboard a descriptive name</div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Description (Optional)</label>
+                            <textarea class="form-control" name="description" rows="3" placeholder="What will this dashboard show?"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3">Dataset Summary</h6>
+                            <div class="row g-3">
+                                <div class="col-6 col-md-3"><div class="text-center p-3" style="background:rgba(0,240,255,0.04);border-radius:var(--r-md)"><div class="fw-8 neon" style="font-size:1.2rem">{{ dataset_info.row_count|floatformat:0 }}</div><small class="text-dim">Rows</small></div></div>
+                                <div class="col-6 col-md-3"><div class="text-center p-3" style="background:rgba(168,255,0,0.04);border-radius:var(--r-md)"><div class="fw-8" style="color:var(--lime);font-size:1.2rem">{{ dataset_info.column_count }}</div><small class="text-dim">Columns</small></div></div>
+                                <div class="col-6 col-md-3"><div class="text-center p-3" style="background:rgba(0,240,255,0.04);border-radius:var(--r-md)"><div class="fw-8 neon" style="font-size:1.2rem">{{ dataset_info.numeric_columns|length }}</div><small class="text-dim">Numeric</small></div></div>
+                                <div class="col-6 col-md-3"><div class="text-center p-3" style="background:rgba(255,184,0,0.04);border-radius:var(--r-md)"><div class="fw-8" style="color:var(--amber);font-size:1.2rem">{{ dataset_info.categorical_columns|length }}</div><small class="text-dim">Categorical</small></div></div>
+                            </div>
+                        </div>
+                        <div class="alert alert-info"><i class="fas fa-circle-info me-2"></i>After creating, you can add charts using your data columns.</div>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'dataset_detail' file_obj.id %}" class="btn btn-ghost">Cancel</a>
+                            <button type="submit" class="btn btn-cyan" style="font-weight:700"><i class="fas fa-plus me-1"></i>Create Dashboard</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

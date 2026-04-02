@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}{{ dashboard.name }} — DataVista{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="rv mb-4">
+        <div class="card" style="background:linear-gradient(135deg,rgba(0,240,255,0.03),rgba(255,0,170,0.02))">
+            <div class="card-body p-4">
+                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+                    <div>
+                        <a href="{% url 'dashboard_list' %}" style="color:var(--gray);font-size:0.82rem"><i class="fas fa-arrow-left me-1"></i>Dashboards</a>
+                        <h2 class="fw-bold mb-1 mt-1">{{ dashboard.name }}</h2>
+                        <p style="color:var(--gray);margin:0;font-size:0.85rem">{{ dashboard.description|default:"Interactive dashboard" }} &middot; {{ dashboard.dataset.uploaded_file.file_name }}</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-cyan" onclick="showModal()"><i class="fas fa-plus me-1"></i>Add Chart</button>
+                        <a href="{% url 'dashboard_list' %}" class="btn btn-ghost"><i class="fas fa-th-large"></i></a>
+                    </div>
+                </div>
+                <div class="row g-3 mt-2">
+                    <div class="col-4 col-md-2"><div class="d-flex align-items-center gap-2 p-2" style="background:rgba(0,240,255,0.04);border-radius:var(--r-sm)"><i class="fas fa-chart-bar neon"></i><div><div class="fw-8 neon" style="font-size:1rem">{{ chart_data|length }}</div><small class="text-dim" style="font-size:0.7rem">Charts</small></div></div></div>
+                    <div class="col-4 col-md-2"><div class="d-flex align-items-center gap-2 p-2" style="background:rgba(168,255,0,0.04);border-radius:var(--r-sm)"><i class="fas fa-database" style="color:var(--lime)"></i><div><div class="fw-8" style="color:var(--lime);font-size:1rem">{{ dashboard.dataset.row_count|floatformat:0 }}</div><small class="text-dim" style="font-size:0.7rem">Rows</small></div></div></div>
+                    <div class="col-4 col-md-2"><div class="d-flex align-items-center gap-2 p-2" style="background:rgba(255,184,0,0.04);border-radius:var(--r-sm)"><i class="fas fa-columns" style="color:var(--amber)"></i><div><div class="fw-8" style="color:var(--amber);font-size:1rem">{{ dashboard.dataset.column_count }}</div><small class="text-dim" style="font-size:0.7rem">Columns</small></div></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if chart_data %}
+    <div class="chart-grid">
+        {% for chart in chart_data %}
+        <div class="chart-box rv" style="grid-column:span 6" data-chart-id="{{ chart.id }}">
+            <div class="chart-head">
+                <h6 class="chart-title">{{ chart.config.title }}</h6>
+                <div class="chart-actions">
+                    <button class="btn btn-sm" onclick="refreshChart({{ chart.id }})" style="background:none;border:none;color:var(--gray)" title="Refresh"><i class="fas fa-rotate"></i></button>
+                    <button class="btn btn-sm" onclick="deleteChart({{ chart.id }})" style="background:none;border:none;color:var(--red)" title="Delete"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+            {% if chart.error %}
+            <div class="alert alert-warn"><i class="fas fa-triangle-exclamation me-2"></i>{{ chart.error }}</div>
+            {% else %}
+            <div class="chart-cv"><canvas id="chart-{{ chart.id }}"></canvas></div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5 rv">
+        <i class="fas fa-chart-pie fa-3x mb-3" style="color:var(--gray2)"></i>
+        <h4 class="text-dim fw-bold">Dashboard is Empty</h4>
+        <p class="text-dim mb-3">Add charts from your dataset.</p>
+        <button class="btn btn-cyan btn-lg" onclick="showModal()"><i class="fas fa-plus me-2"></i>Add First Chart</button>
+    </div>
+    {% endif %}
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title"><i class="fas fa-plus me-2 neon"></i>Add Chart</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+        <div class="row g-3">
+            <div class="col-md-6"><label class="form-label">Title</label><input type="text" class="form-control" id="cTitle" placeholder="e.g. Sales by Region" required></div>
+            <div class="col-md-6"><label class="form-label">Type</label><select class="form-select" id="cType" required><option value="">Select...</option><option value="bar">Bar</option><option value="line">Line</option><option value="pie">Pie</option><option value="scatter">Scatter</option><option value="histogram">Histogram</option><option value="box">Box Plot</option></select></div>
+            <div class="col-md-6"><label class="form-label">X-Axis</label><select class="form-select" id="cX"><option value="">Select...</option>{% for c in dataset_info.columns %}<option value="{{ c.name }}">{{ c.name }} ({{ c.type }})</option>{% endfor %}</select></div>
+            <div class="col-md-6"><label class="form-label">Y-Axis</label><select class="form-select" id="cY"><option value="">Select...</option>{% for c in dataset_info.columns %}<option value="{{ c.name }}">{{ c.name }} ({{ c.type }})</option>{% endfor %}</select></div>
+            <div class="col-md-6"><label class="form-label">Aggregation</label><select class="form-select" id="cAgg"><option value="count">Count</option><option value="sum">Sum</option><option value="avg">Average</option><option value="max">Max</option><option value="min">Min</option></select></div>
+        </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button><button class="btn btn-cyan" onclick="addChart()"><i class="fas fa-plus me-1"></i>Add Chart</button></div>
+</div></div></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var dashId={{ dashboard.id }};
+var cMap={ {% for c in chart_data %}{% if not c.error %}{{ c.id }}:{{ c.data|safe }},{% endif %}{% endfor %} };
+
+document.addEventListener('DOMContentLoaded',function(){
+  Object.keys(cMap).forEach(function(id){ var cv=document.getElementById('chart-'+id); if(cv) DV.createChart(cv,cMap[id]); });
+});
+
+function showModal(){ new bootstrap.Modal(document.getElementById('addModal')).show(); }
+
+function addChart(){
+  var t=document.getElementById('cTitle').value, tp=document.getElementById('cType').value;
+  if(!tp||!t){ DV.toast('Fill required fields','warning'); return; }
+  var btn=document.querySelector('#addModal .btn-cyan'); btn.innerHTML='<i class="fas fa-spinner fa-spin me-1"></i>Adding...'; btn.disabled=true;
+  fetch('/api/dashboard/'+dashId+'/chart/add/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':DV.getCookie('csrftoken')},body:JSON.stringify({chart_type:tp,title:t,x_axis:document.getElementById('cX').value,y_axis:document.getElementById('cY').value,aggregation:document.getElementById('cAgg').value,position_x:0,position_y:0,width:6,height:4})})
+  .then(function(r){return r.json()}).then(function(d){ if(d.success){DV.toast('Chart added!','success');window.location.reload();}else{DV.toast(d.error||'Failed','danger');} })
+  .catch(function(){DV.toast('Network error','danger');})
+  .finally(function(){btn.innerHTML='<i class="fas fa-plus me-1"></i>Add Chart';btn.disabled=false;});
+}
+
+function refreshChart(id){
+  var cv=document.getElementById('chart-'+id); if(!cv) return;
+  DV.showLoading(cv.parentElement);
+  fetch('/api/chart/'+id+'/data/',{headers:{'X-Requested-With':'XMLHttpRequest'}})
+  .then(function(r){return r.json()}).then(function(d){ if(d.success){DV.createChart(cv,d.chart_data);DV.toast('Refreshed!','success');} })
+  .finally(function(){DV.hideLoading(cv.parentElement);});
+}
+
+function deleteChart(id){
+  if(!confirm('Delete this chart?')) return;
+  fetch('/api/chart/'+id+'/delete/',{method:'DELETE',headers:{'X-CSRFToken':DV.getCookie('csrftoken'),'X-Requested-With':'XMLHttpRequest'}})
+  .then(function(r){return r.json()}).then(function(d){ if(d.success){var el=document.querySelector('[data-chart-id="'+id+'"]');if(el)el.remove();DV.destroyChart('chart-'+id);DV.toast('Deleted','success');} });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DataVista{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <div class="loader-overlay" id="pageLoader">
+        <div class="loader-ring"></div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <span class="logo-icon">
+                    <span class="logo-ring"></span>
+                    <i class="fas fa-bolt"></i>
+                </span>
+                <span class="logo-text">Data<span class="logo-accent">Vista</span></span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
+                style="filter:invert(1)">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav me-auto ms-3">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'upload_file' %}"><i
+                                class="fas fa-cloud-upload-alt"></i> Upload</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'dashboard_list' %}"><i
+                                class="fas fa-th-large"></i> Dashboards</a></li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                            <span class="user-avatar">{{ user.username.0|upper }}</span>
+                            <span class="ms-1">{{ user.username }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'dashboard_list' %}"><i
+                                        class="fas fa-th-large"></i>My Dashboards</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}"><i
+                                        class="fas fa-right-from-bracket"></i>Sign Out</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Sign In</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'register' %}"
+                            style="color:var(--cyan)!important;background:rgba(0,240,255,0.08);border-radius:var(--r-sm);">Get
+                            Started</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="toast-box" id="toasts"></div>
+
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div
+            class="alert {% if 'success' in message.tags %}alert-ok{% elif 'error' in message.tags or 'danger' in message.tags %}alert-err{% elif 'warning' in message.tags %}alert-warn{% else %}alert-info{% endif %}">
+            <i
+                class="fas fa-{% if 'success' in message.tags %}check-circle{% elif 'error' in message.tags or 'danger' in message.tags %}circle-xmark{% else %}circle-info{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main>{% block content %}{% endblock %}</main>
+
+    <footer class="footer">
+        <div class="footer-glow"></div>
+        <div class="container">
+            <div class="footer-inner">
+                <a class="footer-brand" href="{% url 'home' %}">
+                    <span class="logo-icon" style="width:30px;height:30px;">
+                        <span class="logo-ring"></span>
+                        <i class="fas fa-bolt" style="font-size:0.7rem"></i>
+                    </span>
+                    <span class="logo-text" style="font-size:1rem">Data<span class="logo-accent">Vista</span></span>
+                </a>
+                <div class="footer-social">
+                    <a href="#" class="footer-social-link" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" class="footer-social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="footer-social-link" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 DataVista</span>
+                <span class="footer-tech">Built with <i class="fab fa-python" style="color:var(--cyan)"></i> Django &middot; <i class="fas fa-chart-bar" style="color:var(--magenta)"></i> Chart.js</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% load static %}
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

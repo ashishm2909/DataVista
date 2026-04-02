@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% block title %}DataVista — Transform Data Into Visual Masterpieces{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="container position-relative" style="z-index:2">
+        <div class="row align-items-center" style="min-height:80vh">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="rv">
+                    <div class="d-inline-flex align-items-center gap-2 mb-3 px-3 py-2" style="border:1px solid var(--border);border-radius:20px;font-size:0.78rem;color:var(--cyan)">
+                        <span style="width:6px;height:6px;background:var(--lime);border-radius:50%;animation:pulse 2s infinite"></span>
+                        AI-Powered Data Visualization
+                    </div>
+                    <h1 class="fw-8 mb-3" style="font-weight:900;letter-spacing:-0.04em;line-height:1.05">
+                        Turn Raw Data Into<br>
+                        <span style="background:linear-gradient(90deg,var(--cyan),var(--magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Visual Masterpieces</span>
+                    </h1>
+                    <p style="font-size:1.1rem;max-width:460px;margin-bottom:1.5rem">
+                        Upload Excel, CSV, or SQL files. Get beautiful interactive dashboards in seconds. No code required.
+                    </p>
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        <span class="badge-cyan badge"><i class="fas fa-bolt me-1"></i>Instant</span>
+                        <span class="badge-lime badge"><i class="fas fa-shield-halved me-1"></i>Secure</span>
+                        <span class="badge-mag badge"><i class="fas fa-mobile-screen me-1"></i>Responsive</span>
+                    </div>
+                    {% if not user.is_authenticated %}
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="{% url 'register' %}" class="btn btn-cyan btn-lg">Start Free <i class="fas fa-arrow-right ms-1"></i></a>
+                        <a href="{% url 'login' %}" class="btn btn-ghost btn-lg">Sign In</a>
+                    </div>
+                    <p class="mt-3" style="font-size:0.78rem;color:var(--gray)"><i class="fas fa-check me-1" style="color:var(--lime)"></i>No credit card &middot; Free forever plan</p>
+                    {% else %}
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="{% url 'upload_file' %}" class="btn btn-cyan btn-lg"><i class="fas fa-cloud-upload-alt me-2"></i>Upload Data</a>
+                        <a href="{% url 'dashboard_list' %}" class="btn btn-ghost btn-lg"><i class="fas fa-th-large me-2"></i>Dashboards</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="rv rv-d2" style="position:relative">
+                    <div class="float-panel p-4" style="position:relative;z-index:2">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="d-inline-flex align-items-center justify-content-center" style="width:32px;height:32px;background:linear-gradient(135deg,var(--cyan),var(--magenta));border-radius:6px"><i class="fas fa-chart-pie" style="color:var(--bg);font-size:0.8rem"></i></span>
+                                <div><div style="font-weight:700;font-size:0.85rem">Sales Analytics</div><div style="font-size:0.7rem;color:var(--gray)">Real-time</div></div>
+                            </div>
+                            <span class="badge-lime badge"><i class="fas fa-arrow-up me-1"></i>+24%</span>
+                        </div>
+                        <div style="height:100px;background:rgba(0,240,255,0.03);border-radius:var(--r-sm);padding:0.5rem;margin-bottom:0.75rem">
+                            <canvas id="heroChart" style="width:100%;height:100%"></canvas>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-4"><div class="text-center p-2" style="background:rgba(0,240,255,0.04);border-radius:var(--r-sm)"><div class="fw-8" style="color:var(--cyan);font-size:1rem">2.4K</div><small class="text-dim" style="font-size:0.68rem">Users</small></div></div>
+                            <div class="col-4"><div class="text-center p-2" style="background:rgba(168,255,0,0.04);border-radius:var(--r-sm)"><div class="fw-8" style="color:var(--lime);font-size:1rem">$47K</div><small class="text-dim" style="font-size:0.68rem">Revenue</small></div></div>
+                            <div class="col-4"><div class="text-center p-2" style="background:rgba(255,0,170,0.04);border-radius:var(--r-sm)"><div class="fw-8" style="color:var(--magenta);font-size:1rem">98%</div><small class="text-dim" style="font-size:0.68rem">Growth</small></div></div>
+                        </div>
+                    </div>
+                    <div class="float-badge d-none d-lg-block" style="bottom:-20px;right:-15px;width:180px;animation-delay:-2s">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="d-inline-flex align-items-center justify-content-center" style="width:24px;height:24px;background:var(--lime);border-radius:4px"><i class="fas fa-check" style="color:var(--bg);font-size:0.65rem"></i></span>
+                            <span style="font-size:0.75rem;font-weight:600">File Processed</span>
+                        </div>
+                        <div style="font-size:0.7rem;color:var(--gray)">revenue_2024.xlsx</div>
+                        <div class="progress-track mt-2"><div class="progress-fill" style="width:100%;background:var(--lime)"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5 rv">
+            <span class="badge-cyan badge mb-2">Features</span>
+            <h2 class="fw-bold">Everything You Need</h2>
+            <p style="max-width:480px;margin:0 auto">Professional tools for teams that demand clarity and speed.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6 rv rv-d1">
+                <div class="card h-100"><div class="card-body text-center p-4">
+                    <div class="auth-icon mx-auto mb-3" style="background:linear-gradient(135deg,var(--cyan),var(--cyan-dim))"><i class="fas fa-cloud-upload-alt fa-lg" style="color:var(--bg)"></i></div>
+                    <h5 class="fw-bold mb-2">Smart Upload</h5>
+                    <p style="font-size:0.88rem">Drag & drop Excel, CSV, or SQL files. Auto-detection and instant parsing.</p>
+                    <div class="mt-2"><small class="text-cyan fw-bold">Instant &middot; Auto-detect</small></div>
+                </div></div>
+            </div>
+            <div class="col-lg-4 col-md-6 rv rv-d2">
+                <div class="card h-100"><div class="card-body text-center p-4">
+                    <div class="auth-icon mx-auto mb-3" style="background:linear-gradient(135deg,var(--lime),var(--lime-dim))"><i class="fas fa-chart-pie fa-lg" style="color:var(--bg)"></i></div>
+                    <h5 class="fw-bold mb-2">Rich Visualizations</h5>
+                    <p style="font-size:0.88rem">Bar, line, pie, scatter, histogram, and box plots with full customization.</p>
+                    <div class="mt-2"><small style="color:var(--lime);font-weight:700">6+ Charts &middot; Interactive</small></div>
+                </div></div>
+            </div>
+            <div class="col-lg-4 col-md-6 rv rv-d3">
+                <div class="card h-100"><div class="card-body text-center p-4">
+                    <div class="auth-icon mx-auto mb-3" style="background:linear-gradient(135deg,var(--magenta),var(--magenta-dim))"><i class="fas fa-users fa-lg" style="color:var(--bg)"></i></div>
+                    <h5 class="fw-bold mb-2">Collaboration</h5>
+                    <p style="font-size:0.88rem">Share dashboards, invite team members, and export to PDF.</p>
+                    <div class="mt-2"><small class="neon-mag fw-bold">Sharing &middot; Export</small></div>
+                </div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5 rv">
+            <span class="badge-lime badge mb-2">Workflow</span>
+            <h2 class="fw-bold">Four Steps to Insight</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3 rv rv-d1"><div class="text-center step-wrap">
+                <div class="step-num mx-auto" style="background:linear-gradient(135deg,var(--cyan),var(--cyan-dim))">1</div>
+                <h6 class="fw-bold mb-1">Upload</h6><p style="font-size:0.85rem">Drop your file and watch it process.</p>
+            </div></div>
+            <div class="col-md-3 rv rv-d2"><div class="text-center step-wrap">
+                <div class="step-num mx-auto" style="background:linear-gradient(135deg,var(--lime),var(--lime-dim))">2</div>
+                <h6 class="fw-bold mb-1">Analyze</h6><p style="font-size:0.85rem">Smart detection identifies patterns.</p>
+            </div></div>
+            <div class="col-md-3 rv rv-d3"><div class="text-center step-wrap">
+                <div class="step-num mx-auto" style="background:linear-gradient(135deg,var(--amber),#cc9300)">3</div>
+                <h6 class="fw-bold mb-1">Visualize</h6><p style="font-size:0.85rem">Choose charts and customize them.</p>
+            </div></div>
+            <div class="col-md-3 rv rv-d4"><div class="text-center step-wrap">
+                <div class="step-num mx-auto" style="background:linear-gradient(135deg,var(--magenta),var(--magenta-dim))">4</div>
+                <h6 class="fw-bold mb-1">Share</h6><p style="font-size:0.85rem">Publish, embed, or export.</p>
+            </div></div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" style="background:linear-gradient(135deg,var(--cyan),var(--magenta));position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 20% 80%,rgba(255,255,255,0.1),transparent 50%),radial-gradient(circle at 80% 20%,rgba(255,255,255,0.08),transparent 50%)"></div>
+    <div class="container text-center position-relative rv">
+        <h2 class="fw-bold text-white mb-2">Ready to See Your Data Clearly?</h2>
+        <p class="text-white mb-4" style="opacity:0.85;max-width:480px;margin:0 auto">Join thousands who trust DataVista for their data visualization needs.</p>
+        {% if not user.is_authenticated %}
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="{% url 'register' %}" class="btn btn-lg" style="background:var(--bg);color:var(--white);font-weight:700">Start Free <i class="fas fa-arrow-right ms-1"></i></a>
+            <a href="{% url 'login' %}" class="btn btn-lg" style="border:2px solid rgba(255,255,255,0.4);color:white;background:transparent">Sign In</a>
+        </div>
+        {% else %}
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="{% url 'upload_file' %}" class="btn btn-lg" style="background:var(--bg);color:var(--white);font-weight:700"><i class="fas fa-cloud-upload-alt me-2"></i>Upload Data</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var c=document.getElementById('heroChart');
+  if(c) new Chart(c.getContext('2d'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun','Jul'],datasets:[{data:[320,410,380,520,490,610,580],borderColor:'#00f0ff',backgroundColor:'rgba(0,240,255,0.05)',borderWidth:2,fill:true,tension:0.4,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{display:false},y:{display:false}}}});
+});
+</script>
+{% endblock %}
+{% endblock %}

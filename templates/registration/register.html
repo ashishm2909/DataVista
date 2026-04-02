@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Create Account — DataVista{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <div class="auth-head">
+                <div class="auth-icon"><i class="fas fa-user-plus fa-lg" style="color:var(--bg)"></i></div>
+                <h4 class="fw-bold mb-1">Create your account</h4>
+                <p style="color:var(--gray);font-size:0.88rem;margin:0">Start visualizing data in seconds</p>
+            </div>
+            <div class="auth-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-err mb-3">{% for e in form.non_field_errors %}<div>{{ e }}</div>{% endfor %}</div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" name="username" id="id_username" placeholder="Choose a username" value="{{ form.username.value|default:'' }}" required autofocus>
+                        {% if form.username.errors %}{% for e in form.username.errors %}<div class="text-dim mt-1" style="font-size:0.78rem;color:var(--red)">{{ e }}</div>{% endfor %}{% else %}<div class="form-hint">{{ form.username.help_text }}</div>{% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" name="password1" id="id_password1" placeholder="Create a password" required>
+                        {% if form.password1.errors %}{% for e in form.password1.errors %}<div class="text-dim mt-1" style="font-size:0.78rem;color:var(--red)">{{ e }}</div>{% endfor %}{% else %}<div class="form-hint">{{ form.password1.help_text }}</div>{% endif %}
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" name="password2" id="id_password2" placeholder="Confirm password" required>
+                        {% if form.password2.errors %}{% for e in form.password2.errors %}<div class="text-dim mt-1" style="font-size:0.78rem;color:var(--red)">{{ e }}</div>{% endfor %}{% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-cyan w-100 btn-lg" style="font-weight:700">Create Account <i class="fas fa-rocket ms-1"></i></button>
+                </form>
+            </div>
+            <div class="auth-foot">
+                <p style="font-size:0.88rem;margin:0">Already have an account? <a href="{% url 'login' %}" style="color:var(--cyan);font-weight:600">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

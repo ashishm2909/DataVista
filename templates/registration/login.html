@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Sign In — DataVista{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <div class="auth-head">
+                <div class="auth-icon"><i class="fas fa-right-to-bracket fa-lg" style="color:var(--bg)"></i></div>
+                <h4 class="fw-bold mb-1">Welcome back</h4>
+                <p style="color:var(--gray);font-size:0.88rem;margin:0">Sign in to your account</p>
+            </div>
+            <div class="auth-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-err mb-3">{% for e in form.non_field_errors %}<div>{{ e }}</div>{% endfor %}</div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="username" id="id_username" placeholder="Your username" required autofocus>
+                            <span class="ig-text"><i class="fas fa-user"></i></span>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="password" id="id_password" placeholder="Your password" required>
+                            <span class="ig-text"><i class="fas fa-lock"></i></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-cyan w-100 btn-lg" style="font-weight:700">Sign In <i class="fas fa-arrow-right ms-1"></i></button>
+                </form>
+            </div>
+            <div class="auth-foot">
+                <p style="font-size:0.88rem;margin:0">Don't have an account? <a href="{% url 'register' %}" style="color:var(--cyan);font-weight:600">Create one free</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

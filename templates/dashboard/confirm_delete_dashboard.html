@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Delete Dashboard — DataVista{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="auth-card" style="animation:fadeUp 0.5s var(--ease)">
+                <div class="auth-head">
+                    <div class="auth-icon" style="background:linear-gradient(135deg,var(--red),#cc0033)"><i class="fas fa-triangle-exclamation fa-lg" style="color:white"></i></div>
+                    <h4 class="fw-bold mb-1">Delete Dashboard</h4>
+                    <p style="color:var(--gray);font-size:0.88rem;margin:0">This cannot be undone</p>
+                </div>
+                <div class="auth-body">
+                    <p style="color:var(--gray)">Delete <strong style="color:var(--white)">"{{ dashboard.name }}"</strong>?</p>
+                    <p style="color:var(--gray);font-size:0.85rem">All charts and configurations will be permanently removed.</p>
+                </div>
+                <div class="auth-foot d-flex justify-content-between">
+                    <a href="{% url 'dashboard_list' %}" class="btn btn-ghost">Cancel</a>
+                    <form method="post" style="display:inline">{% csrf_token %}<button class="btn btn-danger"><i class="fas fa-trash me-1"></i>Delete</button></form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

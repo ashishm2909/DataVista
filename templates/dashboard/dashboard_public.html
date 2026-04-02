@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}{{ dashboard.name }} — Public{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="rv mb-4">
+        <div class="card" style="background:linear-gradient(135deg,rgba(0,240,255,0.03),rgba(255,0,170,0.02))">
+            <div class="card-body p-4">
+                <span class="badge-lime badge mb-2"><i class="fas fa-globe me-1"></i>Public</span>
+                <h2 class="fw-bold mb-1">{{ dashboard.name }}</h2>
+                <p style="color:var(--gray);margin:0;font-size:0.85rem">{{ dashboard.description|default:"Shared dashboard" }} &middot; {{ dashboard.dataset.uploaded_file.file_name }}</p>
+            </div>
+        </div>
+    </div>
+    {% if chart_data %}
+    <div class="chart-grid">
+        {% for chart in chart_data %}
+        <div class="chart-box rv" style="grid-column:span 6" data-chart-id="{{ chart.id }}">
+            <div class="chart-head"><h6 class="chart-title">{{ chart.config.title }}</h6></div>
+            {% if chart.error %}<div class="alert alert-warn">{{ chart.error }}</div>{% else %}<div class="chart-cv"><canvas id="chart-{{ chart.id }}"></canvas></div>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5"><p class="text-dim">No charts in this dashboard.</p></div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var m={ {% for c in chart_data %}{% if not c.error %}{{ c.id }}:{{ c.data|safe }},{% endif %}{% endfor %} };
+  Object.keys(m).forEach(function(id){ var cv=document.getElementById('chart-'+id); if(cv) DV.createChart(cv,m[id]); });
+});
+</script>
+{% endblock %}

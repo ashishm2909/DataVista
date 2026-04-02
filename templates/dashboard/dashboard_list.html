@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboards — DataVista{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="rv d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="fas fa-th-large me-2 neon"></i>Dashboards</h2>
+            <p style="color:var(--gray);margin:0">Manage and share your dashboards</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'upload_file' %}" class="btn btn-cyan"><i class="fas fa-plus me-1"></i>New Dashboard</a>
+        </div>
+    </div>
+    {% if page_obj %}
+    <div class="row g-4">
+        {% for d in page_obj %}
+        <div class="col-md-6 col-lg-4 rv">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="fw-bold mb-0" style="font-size:1rem">{{ d.name }}</h5>
+                        <div class="dropdown">
+                            <button class="btn btn-sm" data-bs-toggle="dropdown" style="background:none;border:none;color:var(--gray);padding:0.15rem"><i class="fas fa-ellipsis-vertical"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'dashboard_view' d.id %}"><i class="fas fa-eye"></i>View</a></li>
+                                <li><a class="dropdown-item" href="{% url 'dataset_detail' d.dataset.uploaded_file.id %}"><i class="fas fa-database"></i>Dataset</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'delete_dashboard' d.id %}" style="color:var(--red)"><i class="fas fa-trash"></i>Delete</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p style="font-size:0.82rem;color:var(--gray);margin-bottom:0.75rem">{{ d.description|default:"No description"|truncatechars:80 }}</p>
+                    <div class="d-flex gap-2 mb-3">
+                        <div class="flex-fill text-center p-2" style="background:rgba(0,240,255,0.04);border-radius:var(--r-sm)"><div class="fw-8 neon" style="font-size:0.95rem">{{ d.charts.count }}</div><small class="text-dim" style="font-size:0.68rem">Charts</small></div>
+                        <div class="flex-fill text-center p-2" style="background:rgba(168,255,0,0.04);border-radius:var(--r-sm)"><div class="fw-8" style="color:var(--lime);font-size:0.95rem">{{ d.dataset.row_count|floatformat:0 }}</div><small class="text-dim" style="font-size:0.68rem">Rows</small></div>
+                        <div class="flex-fill text-center p-2" style="background:rgba(255,184,0,0.04);border-radius:var(--r-sm)"><div class="fw-8" style="color:var(--amber);font-size:0.95rem">{{ d.dataset.column_count }}</div><small class="text-dim" style="font-size:0.68rem">Cols</small></div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-dim"><i class="fas fa-clock me-1"></i>{{ d.updated_at|timesince }} ago</small>
+                        {% if d.is_public %}<span class="badge-lime badge"><i class="fas fa-globe me-1"></i>Public</span>{% else %}<span class="badge" style="background:var(--bg2);color:var(--gray);border:1px solid var(--border)"><i class="fas fa-lock me-1"></i>Private</span>{% endif %}
+                    </div>
+                </div>
+                <div class="card-foot">
+                    <a href="{% url 'dashboard_view' d.id %}" class="btn btn-cyan btn-sm w-100"><i class="fas fa-eye me-1"></i>Open Dashboard</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-4"><ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}" style="background:var(--bg2);border-color:var(--border);color:var(--gray)">&laquo;</a></li>{% endif %}
+        {% for n in page_obj.paginator.page_range %}<li class="page-item"><a class="page-link {% if page_obj.number == n %}active{% endif %}" href="?page={{ n }}" style="background:{% if page_obj.number == n %}var(--cyan){% else %}var(--bg2){% endif %};border-color:var(--border);color:{% if page_obj.number == n %}var(--bg){% else %}var(--gray){% endif %}">{{ n }}</a></li>{% endfor %}
+        {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}" style="background:var(--bg2);border-color:var(--border);color:var(--gray)">&raquo;</a></li>{% endif %}
+    </ul></nav>
+    {% endif %}
+    {% else %}
+    <div class="text-center py-5 rv">
+        <i class="fas fa-chart-line fa-3x mb-3" style="color:var(--gray2)"></i>
+        <h4 class="text-dim fw-bold">No Dashboards Yet</h4>
+        <p class="text-dim mb-4">Upload data and create your first dashboard.</p>
+        <a href="{% url 'upload_file' %}" class="btn btn-cyan btn-lg"><i class="fas fa-cloud-upload-alt me-2"></i>Upload Data</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
