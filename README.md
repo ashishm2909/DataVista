@@ -1,6 +1,6 @@
-# Data Dashboard Platform
+# DataVista
 
-A powerful web-based platform for uploading data files (Excel, CSV, SQL) and creating interactive dashboards with visualizations.
+Data Dashboard Platform - A powerful web-based platform for uploading data files (Excel, CSV, SQL) and creating interactive dashboards with visualizations.
 
 ## Features
 
