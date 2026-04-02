@@ -10,7 +10,13 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_HOSTS
-        value: "*.onrender.com,your-domain.com,datavista-dashboard.onrender.com"
+        value: "*.onrender.com"
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: DATABASE_URL
+        fromService:
+          name: postgres
+          property: connectionString
     autoDeploy: true
 
   - type: pserv
@@ -18,7 +24,21 @@ services:
     plan: free
     ipAllowList: []
 
+  - type: cron
+    name: health-check
+    schedule: "*/5 * * * *"
+    command: "curl -s https://datavista-dashboard.onrender.com/health/"
+    region: oregon
+
   - type: job
     name: migrate
-    command: python manage.py migrate
+    env: python
+    command: pip install -r requirements.txt && python manage.py migrate --run-syncdb
     plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: DATABASE_URL
+        fromService:
+          name: postgres
+          property: connectionString
