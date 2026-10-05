@@ -27,6 +27,11 @@ def home(request):
     return render(request, 'dashboard/home.html')
 
 
+def health_check(request):
+    """Fast health endpoint for deployment checks."""
+    return JsonResponse({'status': 'ok', 'service': 'datavista'})
+
+
 def register(request):
     """User registration view"""
     if request.method == 'POST':
